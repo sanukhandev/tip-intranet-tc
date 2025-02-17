@@ -41,6 +41,14 @@
           "manifest": "./src/webparts/companyCalender/CompanyCalenderWebPart.manifest.json"
         }
       ]
+    },
+    "tabbed-list-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/tabbedList/TabbedListWebPart.js",
+          "manifest": "./src/webparts/tabbedList/TabbedListWebPart.manifest.json"
+        }
+      ]
     }
   },
   "externals": {},
@@ -49,6 +57,7 @@
     "BannerCarouselWebPartStrings": "lib/webparts/bannerCarousel/loc/{locale}.js",
     "QuickLinksWebPartStrings": "lib/webparts/quickLinks/loc/{locale}.js",
     "BuySellItemsWebPartStrings": "lib/webparts/buySellItems/loc/{locale}.js",
-    "CompanyCalenderWebPartStrings": "lib/webparts/companyCalender/loc/{locale}.js"
+    "CompanyCalenderWebPartStrings": "lib/webparts/companyCalender/loc/{locale}.js",
+    "TabbedListWebPartStrings": "lib/webparts/tabbedList/loc/{locale}.js"
   }
 }
