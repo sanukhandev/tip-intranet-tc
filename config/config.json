@@ -9,10 +9,19 @@
           "manifest": "./src/webparts/welcomeMessage/WelcomeMessageWebPart.manifest.json"
         }
       ]
+    },
+    "banner-carousel-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/bannerCarousel/BannerCarouselWebPart.js",
+          "manifest": "./src/webparts/bannerCarousel/BannerCarouselWebPart.manifest.json"
+        }
+      ]
     }
   },
   "externals": {},
   "localizedResources": {
-    "WelcomeMessageWebPartStrings": "lib/webparts/welcomeMessage/loc/{locale}.js"
+    "WelcomeMessageWebPartStrings": "lib/webparts/welcomeMessage/loc/{locale}.js",
+    "BannerCarouselWebPartStrings": "lib/webparts/bannerCarousel/loc/{locale}.js"
   }
 }
