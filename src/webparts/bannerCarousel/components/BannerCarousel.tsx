@@ -1,43 +1,103 @@
-import * as React from 'react';
-import styles from './BannerCarousel.module.scss';
-import type { IBannerCarouselProps } from './IBannerCarouselProps';
-import { escape } from '@microsoft/sp-lodash-subset';
+import * as React from "react";
+import PnpService from "../../../service/pnpService";
+import { CAROUSEL_LIST_NAME } from "../../../CONSTANTS";
+import { IBannerCarouselProps } from "./IBannerCarouselProps";
+import { getImageURL } from "../../../helper";
 
-export default class BannerCarousel extends React.Component<IBannerCarouselProps, {}> {
-  public render(): React.ReactElement<IBannerCarouselProps> {
-    const {
-      description,
-      isDarkTheme,
-      environmentMessage,
-      hasTeamsContext,
-      userDisplayName
-    } = this.props;
+interface ICarouselState {
+  items: any[];
+}
 
+export default class CarouselComponent extends React.Component<
+  IBannerCarouselProps,
+  ICarouselState
+> {
+  constructor(props: IBannerCarouselProps) {
+    super(props);
+    PnpService.init(this.props.context);
+    this.state = {
+      items: [],
+    };
+  }
+
+  public async componentDidMount(): Promise<void> {
+    PnpService.init(this.props.context);
+    const items = await this.getCarouselItems();
+    console.log("====================================");
+    console.log(items);
+    console.log("====================================");
+    this.setState({ items });
+  }
+
+  private async getCarouselItems(): Promise<any[]> {
+    const items = await PnpService.getItemsWithAttachments(CAROUSEL_LIST_NAME);
+    return items.map((item) => {
+      return {
+        Title: item.Title,
+        ImageUrl: getImageURL(item),
+      };
+    });
+  }
+
+  public render(): React.ReactElement<{}> {
     return (
-      <section className={`${styles.bannerCarousel} ${hasTeamsContext ? styles.teams : ''}`}>
-        <div className={styles.welcome}>
-          <img alt="" src={isDarkTheme ? require('../assets/welcome-dark.png') : require('../assets/welcome-light.png')} className={styles.welcomeImage} />
-          <h2>Well done, {escape(userDisplayName)}!</h2>
-          <div>{environmentMessage}</div>
-          <div>Web part property value: <strong>{escape(description)}</strong></div>
+      <div
+        id="carouselExampleIndicators"
+        className="banner carousel slide pointer-event"
+        data-bs-ride="carousel"
+      >
+        <div className="carousel-indicators justify-content-end me-5">
+          <button
+            className="carousel-control-prev"
+            type="button"
+            data-bs-target="#carouselExampleIndicators"
+            data-bs-slide="prev"
+          >
+            <span
+              className="carousel-control-prev-icon"
+              aria-hidden="true"
+            ></span>
+            <span className="visually-hidden">Previous</span>
+          </button>
+          {this.state.items.map((_, index) => (
+            <button
+              key={index}
+              type="button"
+              data-bs-target="#carouselExampleIndicators"
+              data-bs-slide-to={index}
+              className={index === 0 ? "active" : ""}
+              aria-label={`Slide ${index + 1}`}
+              aria-current={index === 0 ? "true" : undefined}
+            ></button>
+          ))}
+          <button
+            className="carousel-control-next"
+            type="button"
+            data-bs-target="#carouselExampleIndicators"
+            data-bs-slide="next"
+          >
+            <span
+              className="carousel-control-next-icon"
+              aria-hidden="true"
+            ></span>
+            <span className="visually-hidden">Next</span>
+          </button>
         </div>
-        <div>
-          <h3>Welcome to SharePoint Framework!</h3>
-          <p>
-            The SharePoint Framework (SPFx) is a extensibility model for Microsoft Viva, Microsoft Teams and SharePoint. It&#39;s the easiest way to extend Microsoft 365 with automatic Single Sign On, automatic hosting and industry standard tooling.
-          </p>
-          <h4>Learn more about SPFx development:</h4>
-          <ul className={styles.links}>
-            <li><a href="https://aka.ms/spfx" target="_blank" rel="noreferrer">SharePoint Framework Overview</a></li>
-            <li><a href="https://aka.ms/spfx-yeoman-graph" target="_blank" rel="noreferrer">Use Microsoft Graph in your solution</a></li>
-            <li><a href="https://aka.ms/spfx-yeoman-teams" target="_blank" rel="noreferrer">Build for Microsoft Teams using SharePoint Framework</a></li>
-            <li><a href="https://aka.ms/spfx-yeoman-viva" target="_blank" rel="noreferrer">Build for Microsoft Viva Connections using SharePoint Framework</a></li>
-            <li><a href="https://aka.ms/spfx-yeoman-store" target="_blank" rel="noreferrer">Publish SharePoint Framework applications to the marketplace</a></li>
-            <li><a href="https://aka.ms/spfx-yeoman-api" target="_blank" rel="noreferrer">SharePoint Framework API reference</a></li>
-            <li><a href="https://aka.ms/m365pnp" target="_blank" rel="noreferrer">Microsoft 365 Developer Community</a></li>
-          </ul>
+        <div className="carousel-inner">
+          {this.state.items.map((item, index) => (
+            <div
+              key={index}
+              className={`carousel-item ${index === 0 ? "active" : ""}`}
+            >
+              <img
+                src={item.ImageUrl}
+                className="d-block w-100"
+                alt={item.Title}
+              />
+            </div>
+          ))}
         </div>
-      </section>
+      </div>
     );
   }
 }

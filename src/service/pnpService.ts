@@ -1,74 +1,90 @@
 import { spfi, SPFx } from "@pnp/sp";
 import { WebPartContext } from "@microsoft/sp-webpart-base";
+import "@pnp/sp/webs"; // ✅ Required for `sp.web`
+import "@pnp/sp/lists"; // ✅ Required for lists
+import "@pnp/sp/items"; // ✅ Required for items
 
 export default class PnpService {
-  private static sp: any;
+  private static sp: ReturnType<typeof spfi> | null = null;
 
+  /**
+   * Initializes PnP service with WebPart context.
+   * Must be called before using any service methods.
+   */
   public static init(context: WebPartContext): void {
-    this.sp = spfi().using(SPFx(context));
+    if (!PnpService.sp) {
+      console.log("Initializing PnP Service...");
+      PnpService.sp = spfi().using(SPFx(context));
+    }
   }
 
+  /**
+   * Ensures PnP Service is initialized before making any API calls.
+   */
+  private static ensureInitialized(): void {
+    if (!PnpService.sp) {
+      throw new Error(
+        "PnpService is not initialized. Call PnpService.init(context) before using it."
+      );
+    }
+  }
+
+  /**
+   * ✅ Fix: Gets items from a SharePoint list (no need for `get()`)
+   */
   public static async getItems(listName: string): Promise<any[]> {
-    const items = await this.sp.web.lists.getByTitle(listName).items.get();
-    return items;
+    PnpService.ensureInitialized();
+    return await PnpService.sp!.web.lists.getByTitle(listName).items();
   }
 
+  /**
+   * ✅ Fix: Gets a single item by ID from a SharePoint list (no need for `get()`)
+   */
   public static async getItemById(listName: string, id: number): Promise<any> {
-    const item = await this.sp.web.lists
-      .getByTitle(listName)
-      .items.getById(id)
-      .get();
-    return item;
+    PnpService.ensureInitialized();
+    return await PnpService.sp!.web.lists.getByTitle(listName).items.getById(
+      id
+    )();
   }
 
+  /**
+   * Creates a new item in a SharePoint list.
+   */
   public static async createItem(listName: string, item: any): Promise<any> {
-    const newItem = await this.sp.web.lists
-      .getByTitle(listName)
-      .items.add(item);
-    return newItem;
+    PnpService.ensureInitialized();
+    return await PnpService.sp!.web.lists.getByTitle(listName).items.add(item);
   }
 
+  /**
+   * Updates an item in a SharePoint list.
+   */
   public static async updateItem(
     listName: string,
     id: number,
     item: any
   ): Promise<any> {
-    const updatedItem = await this.sp.web.lists
-      .getByTitle(listName)
+    PnpService.ensureInitialized();
+    return await PnpService.sp!.web.lists.getByTitle(listName)
       .items.getById(id)
       .update(item);
-    return updatedItem;
   }
 
+  /**
+   * Deletes an item from a SharePoint list.
+   */
   public static async deleteItem(listName: string, id: number): Promise<any> {
-    const deletedItem = await this.sp.web.lists
-      .getByTitle(listName)
+    PnpService.ensureInitialized();
+    return await PnpService.sp!.web.lists.getByTitle(listName)
       .items.getById(id)
       .delete();
-    return deletedItem;
   }
 
   public static async getItemsWithAttachments(
     listName: string
   ): Promise<any[]> {
-    const items = await this.sp.web.lists
-      .getByTitle(listName)
-      .items.select("*, AttachmentFiles")
-      .expand("AttachmentFiles")
-      .get();
-    return items;
-  }
-
-  public static async getItemWithAttachmentsById(
-    listName: string,
-    id: number
-  ): Promise<any> {
-    const item = await this.sp.web.lists
-      .getByTitle(listName)
-      .items.getById(id)
-      .select("*, AttachmentFiles")
-      .expand("AttachmentFiles")
-      .get();
-    return item;
+    PnpService.ensureInitialized();
+    return await PnpService.sp!.web.lists.getByTitle(listName).items.expand(
+      "AttachmentFiles"
+    )();
   }
 }
