@@ -3,6 +3,8 @@ import { WebPartContext } from "@microsoft/sp-webpart-base";
 import "@pnp/sp/webs"; // ✅ Required for `sp.web`
 import "@pnp/sp/lists"; // ✅ Required for lists
 import "@pnp/sp/items"; // ✅ Required for items
+import "@pnp/sp/folders"; // ✅ Ensure folders are imported
+import "@pnp/sp/files"; // ✅ Ensure files are imported
 
 export default class PnpService {
   private static sp: ReturnType<typeof spfi> | null = null;
@@ -86,5 +88,40 @@ export default class PnpService {
     return await PnpService.sp!.web.lists.getByTitle(listName).items.expand(
       "AttachmentFiles"
     )();
+  }
+
+  public static async getLibraryImages(
+    libraryName: string,
+    itemId: number
+  ): Promise<string[]> {
+    PnpService.ensureInitialized();
+
+    try {
+      // Fetch the item first to get its folder URL
+      const item = await PnpService.sp!.web.lists.getByTitle(libraryName)
+        .items.getById(itemId)
+        .select("FileRef")(); // ✅ Ensure to select FileRef for folder path
+
+      if (!item.FileRef) {
+        return [];
+      }
+
+      // Get all files in the item's folder
+      const folderPath = item.FileRef.substring(
+        0,
+        item.FileRef.lastIndexOf("/")
+      );
+      const files = await PnpService.sp!.web.getFolderByServerRelativePath(
+        folderPath
+      ).files();
+
+      return files.map((file) => file.ServerRelativeUrl);
+    } catch (error) {
+      console.error(
+        `Error fetching images for item ${itemId} in ${libraryName}:`,
+        error
+      );
+      return [];
+    }
   }
 }

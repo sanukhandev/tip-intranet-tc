@@ -25,12 +25,21 @@
           "manifest": "./src/webparts/quickLinks/QuickLinksWebPart.manifest.json"
         }
       ]
+    },
+    "buy-sell-items-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/buySellItems/BuySellItemsWebPart.js",
+          "manifest": "./src/webparts/buySellItems/BuySellItemsWebPart.manifest.json"
+        }
+      ]
     }
   },
   "externals": {},
   "localizedResources": {
     "WelcomeMessageWebPartStrings": "lib/webparts/welcomeMessage/loc/{locale}.js",
     "BannerCarouselWebPartStrings": "lib/webparts/bannerCarousel/loc/{locale}.js",
-    "QuickLinksWebPartStrings": "lib/webparts/quickLinks/loc/{locale}.js"
+    "QuickLinksWebPartStrings": "lib/webparts/quickLinks/loc/{locale}.js",
+    "BuySellItemsWebPartStrings": "lib/webparts/buySellItems/loc/{locale}.js"
   }
 }
