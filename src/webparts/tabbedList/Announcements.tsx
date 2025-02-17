@@ -28,9 +28,6 @@ export default class Announcements extends React.Component<
 
   public async componentDidMount(): Promise<void> {
     const announcements = await this.getAnnouncements();
-    console.log("====================================");
-    console.log(announcements);
-    console.log("====================================");
     this.setState({ announcements });
   }
 

@@ -7,6 +7,7 @@ import type { ITabbedListProps } from "./ITabbedListProps";
 // import Joiners from "./Joiners";
 import TabbedLayout from "./TabbedLayout";
 import Announcements from "../Announcements";
+import Events from "./Events";
 
 interface ITabbedComponentState {
   announcements: any[];
@@ -34,7 +35,8 @@ export default class TabbedList extends React.Component<
   public render(): React.ReactElement<ITabbedListProps> {
     return (
       <TabbedLayout>
-        <Announcements context = {this.props.context} />
+        <Announcements context={this.props.context} />
+        <Events context={this.props.context} />
         <div />
       </TabbedLayout>
     );
