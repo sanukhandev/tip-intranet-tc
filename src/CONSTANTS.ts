@@ -7,3 +7,5 @@ export const QUICK_LINKS_LIST_NAME = "QuickLinks";
 export const BUY_SELL_ITEMS_LIST = "BuySellItems";
 
 export const BUY_SELL_ITEMS_IMAGES_LIBRARY = "BuySellItemsImages";
+
+export const EVENTS_LIST_NAME = "Events";

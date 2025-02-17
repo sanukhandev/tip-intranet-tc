@@ -33,6 +33,14 @@
           "manifest": "./src/webparts/buySellItems/BuySellItemsWebPart.manifest.json"
         }
       ]
+    },
+    "company-calender-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/companyCalender/CompanyCalenderWebPart.js",
+          "manifest": "./src/webparts/companyCalender/CompanyCalenderWebPart.manifest.json"
+        }
+      ]
     }
   },
   "externals": {},
@@ -40,6 +48,7 @@
     "WelcomeMessageWebPartStrings": "lib/webparts/welcomeMessage/loc/{locale}.js",
     "BannerCarouselWebPartStrings": "lib/webparts/bannerCarousel/loc/{locale}.js",
     "QuickLinksWebPartStrings": "lib/webparts/quickLinks/loc/{locale}.js",
-    "BuySellItemsWebPartStrings": "lib/webparts/buySellItems/loc/{locale}.js"
+    "BuySellItemsWebPartStrings": "lib/webparts/buySellItems/loc/{locale}.js",
+    "CompanyCalenderWebPartStrings": "lib/webparts/companyCalender/loc/{locale}.js"
   }
 }
