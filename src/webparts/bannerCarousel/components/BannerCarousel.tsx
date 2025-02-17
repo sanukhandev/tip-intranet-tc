@@ -23,9 +23,6 @@ export default class CarouselComponent extends React.Component<
   public async componentDidMount(): Promise<void> {
     PnpService.init(this.props.context);
     const items = await this.getCarouselItems();
-    console.log("====================================");
-    console.log(items);
-    console.log("====================================");
     this.setState({ items });
   }
 
