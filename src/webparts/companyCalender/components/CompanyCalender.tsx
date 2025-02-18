@@ -34,7 +34,7 @@ export default class CompanyCalender extends React.Component<
       events: {},
       currentMonth: new Date(),
       calendarDays: this.generateCalendar(new Date()),
-      selectedDate: today,
+      selectedDate: today, // Select today's date by default
       selectedDateEvents: [],
     };
   }
@@ -42,9 +42,11 @@ export default class CompanyCalender extends React.Component<
   public async componentDidMount(): Promise<void> {
     PnpService.init(this.props.context);
     const eventsByDate = await this.getEvents();
-    this.setState({ 
+    const todayEvents = eventsByDate[this.state.selectedDate] || [];
+
+    this.setState({
       events: eventsByDate,
-      selectedDateEvents: eventsByDate[this.state.selectedDate] || [],
+      selectedDateEvents: todayEvents, // Display today's events by default
     });
   }
 
@@ -82,7 +84,7 @@ export default class CompanyCalender extends React.Component<
 
   private async getEvents(): Promise<{ [key: string]: IEvent[] }> {
     const items = await PnpService.getItems(EVENTS_LIST_NAME);
-    
+
     const eventsByDate: { [key: string]: IEvent[] } = {};
 
     items.forEach((item) => {
@@ -123,7 +125,9 @@ export default class CompanyCalender extends React.Component<
       this.state.currentMonth.getFullYear(),
       this.state.currentMonth.getMonth(),
       day
-    ).toISOString().split("T")[0];
+    )
+      .toISOString()
+      .split("T")[0];
 
     this.setState({
       selectedDate,
@@ -179,14 +183,44 @@ export default class CompanyCalender extends React.Component<
               <tr key={weekIndex}>
                 {week.map((day, dayIndex) => {
                   if (day) {
+                    const formattedDate = new Date(
+                      this.state.currentMonth.getFullYear(),
+                      this.state.currentMonth.getMonth(),
+                      day
+                    )
+                      .toISOString()
+                      .split("T")[0];
+
+                    const today = new Date().toISOString().split("T")[0];
+
                     return (
                       <td
                         key={dayIndex}
-                        className="calendar-day"
+                        className={`calendar-day 
+                ${
+                  this.state.selectedDate === formattedDate
+                    ? "selected-date"
+                    : ""
+                }
+                ${today === formattedDate ? "today-date" : ""}
+              `}
                         onClick={() => this.handleDateClick(day)}
-                        style={{ cursor: "pointer" }}
+                        style={{ cursor: "pointer", position: "relative" }}
                       >
                         {day}
+
+                        {/* Add span based on conditions */}
+                        {today === formattedDate ? (
+                          <span
+                            className="meeting"
+                            style={{ marginLeft: "5px" }}
+                          ></span>
+                        ) : this.state.selectedDate === formattedDate ? (
+                          <span
+                            className="my-task"
+                            style={{ marginLeft: "5px" }}
+                          ></span>
+                        ) : null}
                       </td>
                     );
                   } else {
