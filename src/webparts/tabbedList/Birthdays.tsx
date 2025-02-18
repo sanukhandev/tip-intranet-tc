@@ -48,8 +48,8 @@ export default class Birthdays extends React.Component<
     PnpService.init(this.props.context);
     const birthdays = await this.getBirthdays();
     if (birthdays.length > 0) {
-      this.setState({ birthdays, activeBirthdayIndex: 0 }, () => {
-        this.fetchComments(birthdays[0].EmpId);
+      this.setState({ birthdays, activeBirthdayIndex: 0 }, async () => {
+        await this.fetchComments(birthdays[0].EmpId);
       });
     } else {
       this.setState({ birthdays });
@@ -73,19 +73,50 @@ export default class Birthdays extends React.Component<
   }
 
   private async getBirthdays(): Promise<IBirthday[]> {
+    const today = new Date();
+    const todayMonthDay = today.toISOString().slice(5, 10); // Extract 'MM-DD'
+
+    console.log("Fetching employees for tab:", this.props.tab);
+
+    // Fetch all employee details
     const items = await PnpService.getItemsAndExpand(
       EMPLOYEE_MASTER,
       [
         "FullName",
         "Designation",
         "Birthday",
+        "Doj",
         "EmpCode",
         "Picture/EMail",
         "Picture/Id",
       ],
       ["Picture"]
     );
-    return items.map((item) => ({
+
+    let filteredEmployees: any[] = [];
+
+    if (this.props.tab === "birthdays") {
+      filteredEmployees = items.filter(
+        (emp) => emp.Birthday && emp.Birthday.slice(5, 10) === todayMonthDay
+      );
+    } else if (this.props.tab === "anniversaries") {
+      // Filter employees whose Date of Joining (DOJ) matches today's month and day
+      filteredEmployees = items.filter(
+        (emp) => emp.Doj && emp.Doj.slice(5, 10) === todayMonthDay
+      );
+    } else if (this.props.tab === "joiners") {
+      // Employees who joined in the last 30 days
+      const last30Days = new Date();
+      last30Days.setDate(today.getDate() - 30);
+
+      filteredEmployees = items.filter(
+        (emp) => emp.Doj && new Date(emp.Doj) >= last30Days
+      );
+    }
+
+    console.log("Filtered Employees:", filteredEmployees.length);
+
+    return filteredEmployees.map((item) => ({
       FullName: item.FullName,
       Designation: item.Designation,
       EmpCode: item.EmpCode,
@@ -132,7 +163,7 @@ export default class Birthdays extends React.Component<
       });
 
       // Refresh comments
-      this.fetchComments(
+      await this.fetchComments(
         this.state.birthdays[this.state.activeBirthdayIndex].EmpId
       );
     } catch (error) {
