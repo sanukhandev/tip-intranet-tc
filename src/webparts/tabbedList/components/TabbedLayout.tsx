@@ -15,6 +15,7 @@ const tabs = [
 const TabbedLayout: React.FC<ITabbedLayoutProps> = ({ children }) => {
   return (
     <div>
+      {/* Tab Navigation */}
       <ul className="nav nav-tabs custom" id="myTab" role="tablist">
         {tabs.map((tab, index) => (
           <li key={tab.id} className="nav-item" role="presentation">
@@ -32,19 +33,21 @@ const TabbedLayout: React.FC<ITabbedLayoutProps> = ({ children }) => {
           </li>
         ))}
       </ul>
+
+      {/* Tab Content */}
       <div
         className="tab-content bg-white p-3 border rounded-bottom-3 border-top-0"
         id="myTabContent"
       >
-        {children.map((child, index) => (
+        {tabs.map((tab, index) => (
           <div
-            key={tabs[index].id}
+            key={tab.id}
             className={`tab-pane fade ${index === 0 ? "show active" : ""}`}
-            id={tabs[index].id}
+            id={tab.id}
             role="tabpanel"
-            aria-labelledby={`${tabs[index].id}-tab`}
+            aria-labelledby={`${tab.id}-tab`}
           >
-            {child}
+            {children[index] || <p>No Content Available</p>}
           </div>
         ))}
       </div>

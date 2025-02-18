@@ -14,7 +14,7 @@ interface IBirthday {
 }
 
 interface IComment {
-  Id: number; // Unique ID for the comment (needed for updating Likes)
+  Id: number; // Unique ID for comment updates
   Comment: string;
   Likes: number;
   PostedBy: {
@@ -31,10 +31,10 @@ interface IBirthdaysState {
 }
 
 export default class Birthdays extends React.Component<
-  { context: WebPartContext },
+  { context: WebPartContext; tab: string },
   IBirthdaysState
 > {
-  constructor(props: { context: WebPartContext }) {
+  constructor(props: { context: WebPartContext; tab: string }) {
     super(props);
     this.state = {
       birthdays: [],
@@ -54,6 +54,22 @@ export default class Birthdays extends React.Component<
     } else {
       this.setState({ birthdays });
     }
+  }
+
+  private async postComment(): Promise<void> {
+    const { newComment, birthdays, activeBirthdayIndex } = this.state;
+    if (!newComment.trim()) return;
+
+    const activeEmpId = birthdays[activeBirthdayIndex].EmpId;
+
+    await PnpService.createItem(BIRTHDAY_COMMENTS, {
+      EmployeeIDId: activeEmpId,
+      Comment: newComment,
+      PostedById: await PnpService.getCurrentUserId(), // Get current logged-in user ID
+      Likes: 0, // Default likes count
+    });
+
+    this.setState({ newComment: "" }, () => this.fetchComments(activeEmpId));
   }
 
   private async getBirthdays(): Promise<IBirthday[]> {
@@ -95,7 +111,7 @@ export default class Birthdays extends React.Component<
     const filteredComments = comments.filter((c) => c.EmployeeIDId === empId);
     this.setState({
       comments: filteredComments.map((comment) => ({
-        Id: comment.Id, // Store the unique ID for updates
+        Id: comment.Id,
         Comment: comment.Comment,
         Likes: comment.Likes,
         PostedBy: {
@@ -106,41 +122,16 @@ export default class Birthdays extends React.Component<
     });
   }
 
-  private handleBirthdayClick(index: number) {
-    this.setState({ activeBirthdayIndex: index, newComment: "" }, () => {
-      const activeBirthday = this.state.birthdays[index];
-      if (activeBirthday) {
-        this.fetchComments(activeBirthday.EmpId);
-      }
-    });
-  }
-
-  private async postComment(): Promise<void> {
-    const { newComment, birthdays, activeBirthdayIndex } = this.state;
-    if (!newComment.trim()) return;
-
-    const activeEmpId = birthdays[activeBirthdayIndex].EmpId;
-
-    await PnpService.createItem(BIRTHDAY_COMMENTS, {
-      EmployeeIDId: activeEmpId,
-      Comment: newComment,
-      PostedById: await PnpService.getCurrentUserId(), // Get current logged-in user ID
-      Likes: 0, // Default likes count
-    });
-
-    this.setState({ newComment: "" }, () => this.fetchComments(activeEmpId));
-  }
-
   private async likeComment(
     commentId: number,
     currentLikes: number
   ): Promise<void> {
     try {
       await PnpService.updateItem(BIRTHDAY_COMMENTS, commentId, {
-        Likes: currentLikes + 1, // Increment likes count
+        Likes: currentLikes + 1,
       });
 
-      // Refresh comments to reflect the updated like count
+      // Refresh comments
       this.fetchComments(
         this.state.birthdays[this.state.activeBirthdayIndex].EmpId
       );
@@ -150,16 +141,16 @@ export default class Birthdays extends React.Component<
   }
 
   public render(): React.ReactElement<{}> {
-    const { birthdays, activeBirthdayIndex, comments, newComment } = this.state;
+    const { birthdays, activeBirthdayIndex, comments } = this.state;
     const activeBirthday =
       birthdays.length > 0 ? birthdays[activeBirthdayIndex] : null;
 
     return (
       <div
         className="tab-pane fade active show"
-        id="birthdays"
+        id={this.props.tab}
         role="tabpanel"
-        aria-labelledby="birthdays-tab"
+        aria-labelledby={this.props.tab + "-tab"}
       >
         <div className="row">
           {/* Left Section - Birthday List */}
@@ -171,7 +162,11 @@ export default class Birthdays extends React.Component<
                   className={`nav-link d-flex align-items-center py-3 text-start ${
                     index === activeBirthdayIndex ? "active" : ""
                   }`}
-                  onClick={() => this.handleBirthdayClick(index)}
+                  onClick={() =>
+                    this.setState({ activeBirthdayIndex: index }, () =>
+                      this.fetchComments(birthday.EmpId)
+                    )
+                  }
                 >
                   <div className="col-3">
                     <img
@@ -252,7 +247,7 @@ export default class Birthdays extends React.Component<
                           type="text"
                           className="form-control w-100 rounded-3 p-3"
                           placeholder="Write a Birthday Wish..."
-                          value={newComment}
+                          value={this.state.newComment}
                           onChange={(e) =>
                             this.setState({ newComment: e.target.value })
                           }

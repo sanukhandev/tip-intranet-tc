@@ -2,8 +2,8 @@ import * as React from "react";
 import type { ITabbedListProps } from "./ITabbedListProps";
 import TabbedLayout from "./TabbedLayout";
 import Announcements from "../Announcements";
-import Events from "./Events";
 import Birthdays from "../Birthdays";
+import Events from "./Events";
 
 export default class TabbedList extends React.Component<ITabbedListProps, {}> {
   constructor(props: ITabbedListProps) {
@@ -15,8 +15,9 @@ export default class TabbedList extends React.Component<ITabbedListProps, {}> {
       <TabbedLayout>
         <Announcements context={this.props.context} />
         <Events context={this.props.context} />
-        <Birthdays context={this.props.context} />
-        <div />
+        <Birthdays context={this.props.context} tab="birthdays" />
+        <Birthdays context={this.props.context} tab="anniversaries" />
+        <Birthdays context={this.props.context} tab="joiners" />
       </TabbedLayout>
     );
   }
