@@ -84,17 +84,11 @@ export default class CompanyCalender extends React.Component<
   }
 
   private async getEvents(): Promise<{ [key: string]: IEvent[] }> {
-    const items = await PnpService.getItems(EVENTS_LIST_NAME);
+    const items = await PnpService.getItems(EVENTS_LIST_NAME, [
+      "Status eq 'Published'",
+    ]);
     const eventsByDate: { [key: string]: IEvent[] } = {};
     items.forEach((item) => {
-      console.log("====================================");
-      console.log(
-        new Date(item.StartDate).toISOString().split("T")[0],
-        "dates",
-        item.StartDate,
-        item.Title
-      );
-      console.log("====================================");
       const eventDate = new Date(item.StartDate).toISOString().split("T")[0];
       if (!eventsByDate[eventDate]) {
         eventsByDate[eventDate] = [];

@@ -40,10 +40,14 @@ export default class PnpService {
     filters: string[] = []
   ): Promise<any[]> {
     PnpService.ensureInitialized();
+
     let query = PnpService.sp!.web.lists.getByTitle(listName).items;
+
+    // Combine all filters into a single filter string
     if (filters.length > 0) {
       query = query.filter(filters.join(" and "));
     }
+
     return await query();
   }
 
