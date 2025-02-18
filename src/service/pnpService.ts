@@ -94,12 +94,21 @@ export default class PnpService {
   }
 
   public static async getItemsWithAttachments(
-    listName: string
+    listName: string,
+    filters: string[] = []
   ): Promise<any[]> {
     PnpService.ensureInitialized();
-    return await PnpService.sp!.web.lists.getByTitle(listName).items.expand(
-      "AttachmentFiles"
-    )();
+    // return await PnpService.sp!.web.lists.getByTitle(listName).items.expand(
+    //   "AttachmentFiles"
+    // )();
+    let query =
+      PnpService.sp!.web.lists.getByTitle(listName).items.expand(
+        "AttachmentFiles"
+      );
+    if (filters.length > 0) {
+      query = query.filter(filters.join(" and "));
+    }
+    return await query();
   }
 
   public static async getLibraryImages(
@@ -140,12 +149,20 @@ export default class PnpService {
   public static async getItemsAndExpand(
     listName: string,
     selectFields: string[],
-    expandFields: string[]
+    expandFields: string[],
+    filters: string[] = []
   ): Promise<any[]> {
     PnpService.ensureInitialized();
-    return await PnpService.sp!.web.lists.getByTitle(listName)
-      .items.select(...selectFields)
-      .expand(...expandFields)();
+    let query = PnpService.sp!.web.lists.getByTitle(listName).items.select(
+      ...selectFields
+    );
+    if (expandFields.length > 0) {
+      query = query.expand(...expandFields);
+    }
+    if (filters.length > 0) {
+      query = query.filter(filters.join(" and "));
+    }
+    return await query();
   }
 
   public static async getCurrentUserId(): Promise<number> {
