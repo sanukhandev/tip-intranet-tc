@@ -11,3 +11,9 @@ export const getImageURL = (item: any): string => {
   }
   return "";
 };
+
+export const getUserProfilePicture = (email: string) => {
+  return email
+    ? `${siteUrl}/_layouts/15/userphoto.aspx?size=L&accountname=${email}`
+    : "https://via.placeholder.com/50"; // Default image if email is missing
+};
