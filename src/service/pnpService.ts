@@ -5,6 +5,7 @@ import "@pnp/sp/lists"; // ✅ Required for lists
 import "@pnp/sp/items"; // ✅ Required for items
 import "@pnp/sp/folders"; // ✅ Ensure folders are imported
 import "@pnp/sp/files"; // ✅ Ensure files are imported
+import "@pnp/sp/site-users/web"; // ✅ Ensure site-users are imported
 
 export default class PnpService {
   private static sp: ReturnType<typeof spfi> | null = null;
@@ -123,5 +124,22 @@ export default class PnpService {
       );
       return [];
     }
+  }
+
+  public static async getItemsAndExpand(
+    listName: string,
+    selectFields: string[],
+    expandFields: string[]
+  ): Promise<any[]> {
+    PnpService.ensureInitialized();
+    return await PnpService.sp!.web.lists.getByTitle(listName)
+      .items.select(...selectFields)
+      .expand(...expandFields)();
+  }
+
+  public static async getCurrentUserId(): Promise<number> {
+    PnpService.ensureInitialized();
+    const user = await PnpService.sp!.web.currentUser.select("Id")();
+    return user.Id;
   }
 }
