@@ -20,6 +20,7 @@ interface IEvent {
   RegistrationLink: string;
   StartDate: string;
   EndDate: string;
+  EventType: string;
 }
 
 export default class CompanyCalender extends React.Component<
@@ -59,8 +60,8 @@ export default class CompanyCalender extends React.Component<
       0
     ).getDate();
 
-    let daysArray: (number | null)[][] = [];
-    let week: (number | null)[] = new Array(7).fill(null);
+    const daysArray: (number | null)[][] = [];
+    const week: (number | null)[] = new Array(7).fill(null);
     let dayCounter = 1;
 
     for (let i = firstDayIndex; i < 7; i++) {
@@ -69,7 +70,7 @@ export default class CompanyCalender extends React.Component<
     daysArray.push([...week]);
 
     while (dayCounter <= daysInMonth) {
-      let week: (number | null)[] = [];
+      const week: (number | null)[] = [];
       for (let i = 0; i < 7; i++) {
         if (dayCounter <= daysInMonth) {
           week.push(dayCounter++);
@@ -84,16 +85,20 @@ export default class CompanyCalender extends React.Component<
 
   private async getEvents(): Promise<{ [key: string]: IEvent[] }> {
     const items = await PnpService.getItems(EVENTS_LIST_NAME);
-
     const eventsByDate: { [key: string]: IEvent[] } = {};
-
     items.forEach((item) => {
+      console.log("====================================");
+      console.log(
+        new Date(item.StartDate).toISOString().split("T")[0],
+        "dates",
+        item.StartDate,
+        item.Title
+      );
+      console.log("====================================");
       const eventDate = new Date(item.StartDate).toISOString().split("T")[0];
-
       if (!eventsByDate[eventDate]) {
         eventsByDate[eventDate] = [];
       }
-
       eventsByDate[eventDate].push({
         Title: item.Title,
         Description: item.Description,
@@ -105,6 +110,7 @@ export default class CompanyCalender extends React.Component<
         RegistrationLink: item.RegistrationLink,
         StartDate: item.StartDate,
         EndDate: item.EndDate,
+        EventType: item.EventType,
       });
     });
 
@@ -124,7 +130,7 @@ export default class CompanyCalender extends React.Component<
     const selectedDate = new Date(
       this.state.currentMonth.getFullYear(),
       this.state.currentMonth.getMonth(),
-      day
+      day + 1
     )
       .toISOString()
       .split("T")[0];
@@ -208,11 +214,10 @@ export default class CompanyCalender extends React.Component<
                         style={{ cursor: "pointer", position: "relative" }}
                       >
                         {day}
-
                       </td>
                     );
                   } else {
-                    return <td key={dayIndex} className="empty-day"></td>;
+                    return <td key={dayIndex} className="empty-day" />;
                   }
                 })}
               </tr>
@@ -222,13 +227,14 @@ export default class CompanyCalender extends React.Component<
 
         <div className="d-flex flex-wrap justify-content-between w-100 py-3 border px-3 rounded-3">
           <div className="d-flex align-items-center">
-            <span className="event"></span>Events
+            <span className="event" />
+            Events
           </div>
-     
+
           <div className="d-flex align-items-center">
-            <span className="holiday"></span>Holidays
+            <span className="holiday" />
+            Holidays
           </div>
-         
         </div>
 
         {/* Events Displayed Below the Calendar */}
@@ -236,7 +242,7 @@ export default class CompanyCalender extends React.Component<
           {this.state.selectedDateEvents.length > 0 ? (
             this.state.selectedDateEvents.map((event, index) => (
               <div key={index} className="event-item py-2">
-                <span className="event"></span>
+                <span className={event.EventType.toLocaleLowerCase()} />
                 <span className="ps-1">
                   {new Date(event.StartDate).toLocaleDateString()}
                 </span>

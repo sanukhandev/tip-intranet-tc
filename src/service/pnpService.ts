@@ -35,9 +35,16 @@ export default class PnpService {
   /**
    * ✅ Fix: Gets items from a SharePoint list (no need for `get()`)
    */
-  public static async getItems(listName: string): Promise<any[]> {
+  public static async getItems(
+    listName: string,
+    filters: string[] = []
+  ): Promise<any[]> {
     PnpService.ensureInitialized();
-    return await PnpService.sp!.web.lists.getByTitle(listName).items();
+    let query = PnpService.sp!.web.lists.getByTitle(listName).items;
+    if (filters.length > 0) {
+      query = query.filter(filters.join(" and "));
+    }
+    return await query();
   }
 
   /**
