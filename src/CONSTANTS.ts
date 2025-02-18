@@ -13,3 +13,5 @@ export const EVENTS_LIST_NAME = "Events";
 export const ANNOUNCEMENTS_LIST = "Announcements";
 export const EVENTS_LIST = "Announcements";
 export const EMPLOYEE_MASTER = "EmployeeMaster";
+export const HOLIDAYS_LIST_NAME = "Holidays";
+

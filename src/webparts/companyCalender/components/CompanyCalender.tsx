@@ -2,11 +2,15 @@ import * as React from "react";
 import type { ICompanyCalenderProps } from "./ICompanyCalenderProps";
 import PnpService from "../../../service/pnpService";
 import { EVENTS_LIST_NAME } from "../../../CONSTANTS";
+
 interface ICompanyCalendarState {
-  events: IEvent[];
+  events: { [key: string]: IEvent[] }; // Grouped by date
   currentMonth: Date;
   calendarDays: (number | null)[][];
+  selectedDate: string; // YYYY-MM-DD format
+  selectedDateEvents: IEvent[];
 }
+
 interface IEvent {
   Title: string;
   Description: string;
@@ -17,26 +21,31 @@ interface IEvent {
   StartDate: string;
   EndDate: string;
 }
+
 export default class CompanyCalender extends React.Component<
   ICompanyCalenderProps,
   ICompanyCalendarState
 > {
   constructor(props: ICompanyCalenderProps) {
     super(props);
+    const today = new Date().toISOString().split("T")[0];
+
     this.state = {
-      events: [],
+      events: {},
       currentMonth: new Date(),
       calendarDays: this.generateCalendar(new Date()),
+      selectedDate: today,
+      selectedDateEvents: [],
     };
   }
 
   public async componentDidMount(): Promise<void> {
     PnpService.init(this.props.context);
-    const events = await this.getEvents();
-    console.log("====================================");
-    console.log(events);
-    console.log("====================================");
-    this.setState({ events });
+    const eventsByDate = await this.getEvents();
+    this.setState({ 
+      events: eventsByDate,
+      selectedDateEvents: eventsByDate[this.state.selectedDate] || [],
+    });
   }
 
   private generateCalendar(date: Date): (number | null)[][] {
@@ -71,20 +80,33 @@ export default class CompanyCalender extends React.Component<
     return daysArray;
   }
 
-  private async getEvents(): Promise<IEvent[]> {
+  private async getEvents(): Promise<{ [key: string]: IEvent[] }> {
     const items = await PnpService.getItems(EVENTS_LIST_NAME);
-    return items.map((item) => ({
-      Title: item.Title,
-      Description: item.Description,
-      Location: item.Location,
-      Category: item.Category,
-      ImageUrl: item.Image
-        ? item.Image.Url
-        : "assets/images/default-placeholder.png",
-      RegistrationLink: item.RegistrationLink,
-      StartDate: item.StartDate,
-      EndDate: item.EndDate,
-    }));
+    
+    const eventsByDate: { [key: string]: IEvent[] } = {};
+
+    items.forEach((item) => {
+      const eventDate = new Date(item.StartDate).toISOString().split("T")[0];
+
+      if (!eventsByDate[eventDate]) {
+        eventsByDate[eventDate] = [];
+      }
+
+      eventsByDate[eventDate].push({
+        Title: item.Title,
+        Description: item.Description,
+        Location: item.Location,
+        Category: item.Category,
+        ImageUrl: item.Image
+          ? item.Image.Url
+          : "assets/images/default-placeholder.png",
+        RegistrationLink: item.RegistrationLink,
+        StartDate: item.StartDate,
+        EndDate: item.EndDate,
+      });
+    });
+
+    return eventsByDate;
   }
 
   private changeMonth(offset: number): void {
@@ -93,6 +115,19 @@ export default class CompanyCalender extends React.Component<
     this.setState({
       currentMonth: newMonth,
       calendarDays: this.generateCalendar(newMonth),
+    });
+  }
+
+  private handleDateClick(day: number): void {
+    const selectedDate = new Date(
+      this.state.currentMonth.getFullYear(),
+      this.state.currentMonth.getMonth(),
+      day
+    ).toISOString().split("T")[0];
+
+    this.setState({
+      selectedDate,
+      selectedDateEvents: this.state.events[selectedDate] || [],
     });
   }
 
@@ -142,14 +177,22 @@ export default class CompanyCalender extends React.Component<
           <tbody>
             {this.state.calendarDays.map((week, weekIndex) => (
               <tr key={weekIndex}>
-                {week.map((day, dayIndex) => (
-                  <td
-                    key={dayIndex}
-                    className={day ? "calendar-day" : "empty-day"}
-                  >
-                    {day}
-                  </td>
-                ))}
+                {week.map((day, dayIndex) => {
+                  if (day) {
+                    return (
+                      <td
+                        key={dayIndex}
+                        className="calendar-day"
+                        onClick={() => this.handleDateClick(day)}
+                        style={{ cursor: "pointer" }}
+                      >
+                        {day}
+                      </td>
+                    );
+                  } else {
+                    return <td key={dayIndex} className="empty-day"></td>;
+                  }
+                })}
               </tr>
             ))}
           </tbody>
@@ -170,16 +213,21 @@ export default class CompanyCalender extends React.Component<
           </div>
         </div>
 
+        {/* Events Displayed Below the Calendar */}
         <div className="pt-4">
-          {this.state.events.map((event, index) => (
-            <div key={index} className="event-item py-2">
-              <span className="holiday"></span>
-              <span className="ps-1">
-                {new Date(event.StartDate).toLocaleDateString()}
-              </span>
-              <h5 className="fw-bold pt-2">{event.Title}</h5>
-            </div>
-          ))}
+          {this.state.selectedDateEvents.length > 0 ? (
+            this.state.selectedDateEvents.map((event, index) => (
+              <div key={index} className="event-item py-2">
+                <span className="holiday"></span>
+                <span className="ps-1">
+                  {new Date(event.StartDate).toLocaleDateString()}
+                </span>
+                <h5 className="fw-bold pt-2">{event.Title}</h5>
+              </div>
+            ))
+          ) : (
+            <p>No events for this date.</p>
+          )}
         </div>
       </div>
     );
