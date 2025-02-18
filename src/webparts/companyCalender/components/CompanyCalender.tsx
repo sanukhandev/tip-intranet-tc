@@ -209,18 +209,6 @@ export default class CompanyCalender extends React.Component<
                       >
                         {day}
 
-                        {/* Add span based on conditions */}
-                        {today === formattedDate ? (
-                          <span
-                            className="meeting"
-                            style={{ marginLeft: "5px" }}
-                          ></span>
-                        ) : this.state.selectedDate === formattedDate ? (
-                          <span
-                            className="my-task"
-                            style={{ marginLeft: "5px" }}
-                          ></span>
-                        ) : null}
                       </td>
                     );
                   } else {
@@ -236,15 +224,11 @@ export default class CompanyCalender extends React.Component<
           <div className="d-flex align-items-center">
             <span className="event"></span>Events
           </div>
-          <div className="d-flex align-items-center">
-            <span className="meeting"></span>Meetings
-          </div>
+     
           <div className="d-flex align-items-center">
             <span className="holiday"></span>Holidays
           </div>
-          <div className="d-flex align-items-center">
-            <span className="my-task"></span>My Tasks
-          </div>
+         
         </div>
 
         {/* Events Displayed Below the Calendar */}
@@ -252,7 +236,7 @@ export default class CompanyCalender extends React.Component<
           {this.state.selectedDateEvents.length > 0 ? (
             this.state.selectedDateEvents.map((event, index) => (
               <div key={index} className="event-item py-2">
-                <span className="holiday"></span>
+                <span className="event"></span>
                 <span className="ps-1">
                   {new Date(event.StartDate).toLocaleDateString()}
                 </span>
