@@ -33,7 +33,11 @@ export default class Announcements extends React.Component<
 
   private async getAnnouncements(): Promise<IAnnouncement[]> {
     PnpService.init(this.props.context);
-    const items = await PnpService.getItemsWithAttachments(ANNOUNCEMENTS_LIST);
+    const today = new Date().toISOString();
+    const items = await PnpService.getItemsWithAttachments(ANNOUNCEMENTS_LIST, [
+      "StartDate le datetime'" + today + "'",
+      "EndDate ge datetime'" + today + "'",
+    ]);
     return items.map((item) => ({
       Title: item.Title,
       Category: item.Category,
