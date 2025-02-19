@@ -33,8 +33,11 @@ export default class Events extends React.Component<
 
   private async getEvents(): Promise<IEvent[]> {
     PnpService.init(this.props.context);
+    const today = new Date().toISOString();
     const items = await PnpService.getItemsWithAttachments(EVENTS_LIST_NAME, [
       "Status eq 'Published'",
+      "StartDate le datetime '" + today + "'",
+      "EndDate ge datetime '" + today + "'",
     ]);
     return items.map((item) => ({
       Title: item.Title,
