@@ -1,6 +1,15 @@
 import { siteUrl } from "./CONSTANTS";
 
-export const getImageURL = (item: any): string => {
+interface AttachmentFile {
+  ServerRelativeUrl: string;
+}
+
+interface Item {
+  Attachments: boolean;
+  AttachmentFiles: AttachmentFile[];
+}
+
+export const getImageURL = (item: Item): string => {
   if (
     item.Attachments &&
     item.AttachmentFiles &&
@@ -12,7 +21,7 @@ export const getImageURL = (item: any): string => {
   return "";
 };
 
-export const getUserProfilePicture = (email: string) => {
+export const getUserProfilePicture = (email: string): string => {
   return email
     ? `${siteUrl}/_layouts/15/userphoto.aspx?size=L&accountname=${email}`
     : "https://via.placeholder.com/50"; // Default image if email is missing
