@@ -27,7 +27,7 @@ export default class WelcomeMessage extends React.Component<
           <p>
             We value teamwork and communication.
             <br />
-            Explore, connect, and thrive with us!
+            Explore, connect and thrive with us!
           </p>
           <a href="#">
             Explore more
