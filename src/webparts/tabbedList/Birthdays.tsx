@@ -107,12 +107,12 @@ export default class Birthdays extends React.Component<
       );
     } else if (this.props.tab === "joiners") {
       // Employees who joined in the last 30 days
-      const last30Days = new Date();
-      last30Days.setDate(today.getDate() - 30);
+      const last7Days = new Date();
+      last7Days.setDate(last7Days.getDate() - 7); // Get date 7 days ago
 
-      filteredEmployees = items.filter(
-        (emp) => emp.Doj && new Date(emp.Doj) >= last30Days
-      );
+      filteredEmployees = items
+        .filter((emp) => emp.Doj && new Date(emp.Doj) >= last7Days) // Filter last 7 days
+        .sort((a, b) => new Date(b.Doj).getTime() - new Date(a.Doj).getTime()); // Sort by date DESC (newest first)
     }
 
     console.log("Filtered Employees:", filteredEmployees.length);
