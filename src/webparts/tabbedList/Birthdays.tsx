@@ -66,7 +66,8 @@ export default class Birthdays extends React.Component<
       EmployeeIDId: activeEmpId,
       Comment: newComment,
       PostedById: await PnpService.getCurrentUserId(), // Get current logged-in user ID
-      Likes: 0, // Default likes count
+      Likes: 0,
+      CommentType: this.props.tab, // Default likes count
     });
 
     this.setState({ newComment: "" }, () => this.fetchComments(activeEmpId));
@@ -136,8 +137,10 @@ export default class Birthdays extends React.Component<
         "PostedBy/Title",
         "PostedBy/EMail",
         "EmployeeIDId",
+        "CommentType",
       ],
-      ["PostedBy"]
+      ["PostedBy"],
+      [`CommentType eq '${this.props.tab}'`]
     );
     const filteredComments = comments.filter((c) => c.EmployeeIDId === empId);
     this.setState({
