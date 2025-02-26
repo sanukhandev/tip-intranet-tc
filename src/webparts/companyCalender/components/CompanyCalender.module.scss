@@ -1,34 +1,28 @@
 @import '~@fluentui/react/dist/sass/References.scss';
 
-.companyCalender {
-  overflow: hidden;
-  padding: 1em;
-  color: "[theme:bodyText, default: #323130]";
-  color: var(--bodyText);
-  &.teams {
-    font-family: $ms-font-family-fallbacks;
-  }
-}
+#calendar {
+  table {
+    td {
+      &.highlight-today::before,
+      &.highlight-selected::before {
+        content: "";
+        display: block;
+        position: absolute;
+        bottom: -0.1875rem;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 0.5625rem;
+        height: 0.5625rem;
+        border-radius: 50%;
+      }
 
-.welcome {
-  text-align: center;
-}
+      &.highlight-today::before {
+        background-color: #7cf04e;
+      }
 
-.welcomeImage {
-  width: 100%;
-  max-width: 420px;
-}
-
-.links {
-  a {
-    text-decoration: none;
-    color: "[theme:link, default:#03787c]";
-    color: var(--link); // note: CSS Custom Properties support is limited to modern browsers only
-
-    &:hover {
-      text-decoration: underline;
-      color: "[theme:linkHovered, default: #014446]";
-      color: var(--linkHovered); // note: CSS Custom Properties support is limited to modern browsers only
+      &.highlight-selected::before {
+        background-color: #5e4ef0;
+      }
     }
   }
 }
