@@ -4,6 +4,7 @@ import { EVENTS_LIST_NAME } from "../../../CONSTANTS";
 import { WebPartContext } from "@microsoft/sp-webpart-base";
 
 interface IEvent {
+  ID: string;
   Title: string;
   Category: string;
   Description: string;
@@ -42,6 +43,7 @@ export default class Events extends React.Component<
     return items.map((item) => ({
       Title: item.Title,
       Category: item.Category,
+      ID:item.ID,
       Description: item.Description,
       ImageUrl: item.AttachmentFiles?.length
         ? item.AttachmentFiles[0].ServerRelativeUrl
@@ -73,7 +75,7 @@ export default class Events extends React.Component<
                 />
                 <div className="p-3 ps-0 pb-0 position-absolute left-1 bottom-2">
                   <h4 className="text-white">{event.Title}</h4>
-                  <a className="text-white" href={event.ReadMoreLink}>
+                  <a className="text-white" href={this.props.context.pageContext.web.absoluteUrl + '/SitePages/EventDetailView.aspx?eventId='+event.ID}>
                     Read more{" "}
                     <svg
                       className="ms-1 mb-1"
@@ -106,7 +108,9 @@ export default class Events extends React.Component<
             </div>
           ))}
           <div className="col-12">
-            <a className="main-btn background-none d-inline-flex align-items-center px-4 py-2 mt-4 rounded-5">
+            <a className="main-btn background-none d-inline-flex align-items-center px-4 py-2 mt-4 rounded-5"
+            href={`${this.props.context.pageContext.web.absoluteUrl}/SitePages/AllEvent.aspx`}
+            >
               <span>View All</span>
               <svg
                 className="ml-2"

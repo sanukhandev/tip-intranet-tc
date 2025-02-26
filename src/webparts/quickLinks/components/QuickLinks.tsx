@@ -32,8 +32,9 @@ export default class QuickLinks extends React.Component<
     return items.map((item) => ({
       Title: item.AppName,
       ImageUrl: getImageURL(item),
-      Link: item.AppLink,
-    }));
+      Link: item.AppLink?.Url,
+      DisplayOrder:item.DisplayOrder
+    })).sort((a,b) => a.DisplayOrder - b.DisplayOrder);
   }
 
   public render(): React.ReactElement<IQuickLinksProps> {
