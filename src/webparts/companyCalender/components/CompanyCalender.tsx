@@ -53,7 +53,7 @@ export default class CompanyCalender extends React.Component<
 
   private generateCalendar(date: Date): (number | null)[][] {
     date.setDate(1);
-    const firstDayIndex = date.getDay();
+    const firstDayIndex = (date.getDay() + 6) % 7; // Adjust Sunday-based index to Monday-based
     const daysInMonth = new Date(
       date.getFullYear(),
       date.getMonth() + 1,
@@ -197,13 +197,9 @@ export default class CompanyCalender extends React.Component<
                       <td
                         key={dayIndex}
                         className={`calendar-day 
-                ${
-                  this.state.selectedDate === formattedDate
-                    ? "selected-date"
-                    : ""
-                }
-                ${today === formattedDate ? "today-date" : ""}
-              `}
+          ${this.state.selectedDate === formattedDate ? "selected-date" : ""} 
+          ${today === formattedDate ? "highlight-today" : ""} 
+        `}
                         onClick={() => this.handleDateClick(day)}
                         style={{ cursor: "pointer", position: "relative" }}
                       >
