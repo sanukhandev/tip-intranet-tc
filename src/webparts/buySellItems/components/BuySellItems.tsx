@@ -96,7 +96,7 @@ export default class BuySellItems extends React.Component<
           </div>
           <div className="d-flex justify-content-between align-items-center p-3">
             <a
-              href="#"
+              href={`${this.props.context.pageContext.web.absoluteUrl}/SitePages/MarketPlace.aspx`}
               className="add-btn rounded-pill bg-blue custom px-4 py-2 d-flex align-items-center"
             >
               <svg
