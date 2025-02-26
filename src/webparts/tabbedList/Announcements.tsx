@@ -119,7 +119,7 @@ export default class Announcements extends React.Component<
           <div className="view-all p-3">
             <a
               className="main-btn background-none d-inline-flex align-items-center px-4 py-2 mt-3 rounded-5"
-              href="#"
+              href={`${this.props.context.pageContext.web.absoluteUrl}/SitePages/AllAnnouncements.aspx`}
             >
               <span>View All</span>
             </a>
