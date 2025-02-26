@@ -2,7 +2,7 @@ import * as React from "react";
 import type { ICompanyCalenderProps } from "./ICompanyCalenderProps";
 import PnpService from "../../../service/pnpService";
 import { EVENTS_LIST_NAME } from "../../../CONSTANTS";
-import styles  from "./CompanyCalender.module.scss";
+import styles from "./CompanyCalender.module.scss";
 
 interface ICompanyCalendarState {
   events: { [key: string]: IEvent[] }; // Grouped by date
@@ -204,8 +204,12 @@ export default class CompanyCalender extends React.Component<
                       <td
                         key={dayIndex}
                         className={`calendar-day 
-          ${this.state.selectedDate === formattedDate ? styles['highlight-selected'] : ""} 
-          ${todayFormatted === formattedDate ? styles['highlight-selected'] : ""} 
+          ${
+            this.state.selectedDate === formattedDate
+              ? "highlight-selected"
+              : ""
+          } 
+          ${todayFormatted === formattedDate ? "highlight-selected" : ""} 
         `}
                         onClick={() => this.handleDateClick(day)}
                         style={{ cursor: "pointer", position: "relative" }}
