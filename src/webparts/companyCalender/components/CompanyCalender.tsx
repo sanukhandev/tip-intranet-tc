@@ -209,7 +209,7 @@ export default class CompanyCalender extends React.Component<
               ? "highlight-selected"
               : ""
           } 
-          ${todayFormatted === formattedDate ? "highlight-selected" : ""} 
+          ${todayFormatted === formattedDate ? "highlight-today" : ""} 
         `}
                         onClick={() => this.handleDateClick(day)}
                         style={{ cursor: "pointer", position: "relative" }}
