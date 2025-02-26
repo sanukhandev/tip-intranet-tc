@@ -137,7 +137,7 @@ export default class CompanyCalender extends React.Component<
 
   public render(): React.ReactElement<ICompanyCalenderProps> {
     return (
-      <div>
+      <div id="calendar">
         <div className="d-flex align-items-center justify-content-between py-2 pb-4">
           <h4 className="text-left fw-bold mb-0">Company Calendar</h4>
         </div>
@@ -186,19 +186,25 @@ export default class CompanyCalender extends React.Component<
                     const formattedDate = new Date(
                       this.state.currentMonth.getFullYear(),
                       this.state.currentMonth.getMonth(),
-                      day
+                      day + 1
                     )
                       .toISOString()
                       .split("T")[0];
 
-                    const today = new Date().toISOString().split("T")[0];
+                    const today = new Date();
+                    const todayFormatted = `${today.getFullYear()}-${String(
+                      today.getMonth() + 1
+                    ).padStart(2, "0")}-${String(today.getDate()).padStart(
+                      2,
+                      "0"
+                    )}`;
 
                     return (
                       <td
                         key={dayIndex}
                         className={`calendar-day 
           ${this.state.selectedDate === formattedDate ? "selected-date" : ""} 
-          ${today === formattedDate ? "highlight-today" : ""} 
+          ${todayFormatted === formattedDate ? "highlight" : ""} 
         `}
                         onClick={() => this.handleDateClick(day)}
                         style={{ cursor: "pointer", position: "relative" }}
