@@ -203,7 +203,7 @@ export default class CompanyCalender extends React.Component<
                       <td
                         key={dayIndex}
                         className={`calendar-day 
-          ${this.state.selectedDate === formattedDate ? "selected-date" : ""} 
+          ${this.state.selectedDate === formattedDate ? "highlight" : ""} 
           ${todayFormatted === formattedDate ? "highlight" : ""} 
         `}
                         onClick={() => this.handleDateClick(day)}
