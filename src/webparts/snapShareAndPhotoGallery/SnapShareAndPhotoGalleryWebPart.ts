@@ -39,6 +39,9 @@ export default class SnapShareAndPhotoGalleryWebPart extends BaseClientSideWebPa
     SPComponentLoader.loadCss(
       `https://techcarrotae.sharepoint.com/sites/TIPDev1/Assets/css/main.min.css`
     );
+    SPComponentLoader.loadCss(
+      `https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css`
+    );
     SPComponentLoader.loadScript(
       `https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js`
     );
