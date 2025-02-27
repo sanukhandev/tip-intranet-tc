@@ -17,3 +17,5 @@ export const EVENTS_LIST = "Announcements";
 export const EMPLOYEE_MASTER = "EmployeeMaster";
 export const HOLIDAYS_LIST_NAME = "Holidays";
 export const PHOTO_GALLERY = "PhotoGallery";
+export const SNAP_SHARE_LIST = "SnapAndShareList";
+export const SNAP_SHARE = "SnapAndShare";

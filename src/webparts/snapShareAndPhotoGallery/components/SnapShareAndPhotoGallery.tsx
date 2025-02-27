@@ -7,13 +7,13 @@ import PnpService from "../../../service/pnpService";
 
 interface ISnapShareAndPhotoGalleryState {
   carouselItems: {
-    image: string;
-    alt: string;
-    profilePic: string;
-    name: string;
-    role: string;
-    likes: number;
-    comments: number;
+    id: number;
+    title: string;
+    postedBy: string;
+    postedByEmail: string;
+    postedByRole: string;
+    likes?: number; // Making 'likes' optional since it wasn't included in your sample data
+    images: string[];
   }[];
   galleryItems: Record<string, string[]>;
 }
@@ -25,46 +25,26 @@ export default class SnapShareAndPhotoGallery extends React.Component<
   constructor(props: ISnapShareAndPhotoGalleryProps) {
     super(props);
     this.state = {
-      carouselItems: [
-        {
-          image:
-            "https://techcarrot.co.in/staging/tip/assets/images/snapshare-01.jpg",
-          alt: "Snap 1",
-          profilePic:
-            "https://techcarrot.co.in/staging/tip/assets/images/ans.jpg",
-          name: "Sivabalan Sivakumar",
-          role: "Technology Head Analyst",
-          likes: 99,
-          comments: 23,
-        },
-        {
-          image:
-            "https://techcarrot.co.in/staging/tip/assets/images/announcements.jpg",
-          alt: "Snap 1",
-          profilePic:
-            "https://techcarrot.co.in/staging/tip/assets/images/ans.jpg",
-          name: "Sivabalan Sivakumar",
-          role: "Technology Head Analyst",
-          likes: 99,
-          comments: 23,
-        },
-      ],
+      carouselItems: [],
       galleryItems: {},
     };
   }
 
   async componentDidMount(): Promise<void> {
     PnpService.init(this.props.context);
-    await this.fetchPhotoGallery();
+
+    // Fetch data in parallel
+    const [carouselItems, galleryItems] = await Promise.all([
+      PnpService.getSnapAndShareAndImages(),
+      PnpService.getDocumentLibraryWithFoldersAndImages(),
+    ]);
+
+    this.setState({ carouselItems, galleryItems });
   }
-  private async fetchPhotoGallery(): Promise<void> {
-    const items = await PnpService.getDocumentLibraryWithFoldersAndImages();
-    this.setState({
-      ...this.state,
-      galleryItems: items,
-    });
-  }
+
   public render(): React.ReactElement<ISnapShareAndPhotoGalleryProps> {
+    const { carouselItems, galleryItems } = this.state;
+
     return (
       <div className="container">
         <Tabs />
@@ -74,10 +54,10 @@ export default class SnapShareAndPhotoGallery extends React.Component<
             id="snap-and-share"
             role="tabpanel"
           >
-            <Carousel items={this.state.carouselItems} />
+            <Carousel items={carouselItems} />
           </div>
           <div className="tab-pane p-2 fade" id="photo-gallery" role="tabpanel">
-            <Gallery items={this.state.galleryItems} />
+            <Gallery items={galleryItems} />
           </div>
         </div>
       </div>

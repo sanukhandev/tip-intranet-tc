@@ -1,14 +1,15 @@
 import * as React from "react";
+import { getUserProfilePicture } from "../../../helper";
 
 interface CarouselProps {
   items: {
-    image: string;
-    alt: string;
-    profilePic: string;
-    name: string;
-    role: string;
-    likes: number;
-    comments: number;
+    id: number;
+    title: string;
+    postedBy: string;
+    postedByEmail: string;
+    postedByRole: string;
+    likes?: number;
+    images: string[];
   }[];
 }
 
@@ -40,8 +41,8 @@ export default class Carousel extends React.Component<CarouselProps> {
                     <div className="card border-0">
                       <img
                         className="mx-290 object-fit-cover rounded-3"
-                        src={item.image}
-                        alt={item.alt}
+                        src={item.images[0]}
+                        alt={item.title}
                       />
                       <div className="card-body">
                         <div className="mb-3">
@@ -49,17 +50,17 @@ export default class Carousel extends React.Component<CarouselProps> {
                             <div className="left me-3">
                               <img
                                 className="rounded-circle cmn-pro-pic"
-                                src={item.profilePic}
+                                src={getUserProfilePicture(item.postedByEmail)}
                                 alt="Profile"
                               />
                             </div>
                             <div className="right w-100 d-flex justify-content-between">
                               <div>
                                 <h6 className="form-label mb-0 d-flex justify-content-between">
-                                  <strong>{item.name}</strong>
+                                  <strong>{item.postedBy}</strong>
                                 </h6>
                                 <p className="mb-0">
-                                  <small>{item.role}</small>
+                                  <small>{item.postedByRole}</small>
                                 </p>
                               </div>
                               <div className="text-end">
@@ -67,7 +68,7 @@ export default class Carousel extends React.Component<CarouselProps> {
                                   ❤️ {item.likes}
                                 </button>
                                 <button className="btn btn-secondary d-inline-flex align-items-center rounded-5 text-white text-12 px-3 py-1 fw-bold ms-2">
-                                  💬 {item.comments}
+                                  💬 {0}
                                 </button>
                               </div>
                             </div>

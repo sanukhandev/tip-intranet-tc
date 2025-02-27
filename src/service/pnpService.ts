@@ -6,7 +6,7 @@ import "@pnp/sp/items";
 import "@pnp/sp/folders";
 import "@pnp/sp/files";
 import "@pnp/sp/site-users/web";
-import { PHOTO_GALLERY } from "../CONSTANTS";
+import { PHOTO_GALLERY, SNAP_SHARE, SNAP_SHARE_LIST } from "../CONSTANTS";
 
 export default class PnpService {
   private static sp: ReturnType<typeof spfi> | null = null;
@@ -202,6 +202,84 @@ export default class PnpService {
     } catch (error) {
       console.error(`Error fetching document library folders & images:`, error);
       return {};
+    }
+  }
+
+  public static async getSnapAndShareAndImages(): Promise<
+    {
+      id: number;
+      title: string;
+      postedBy: string;
+      postedByEmail: string;
+      postedByRole: string;
+      likes?: number; // Making 'likes' optional since it wasn't included in your sample data
+      images: string[];
+    }[]
+  > {
+    PnpService.ensureInitialized();
+
+    try {
+      // Get the current site's server-relative URL
+      const web = PnpService.sp!.web;
+      const siteUrl = await web.select("ServerRelativeUrl")();
+
+      // Step 1: Fetch all items from SnapAndShareList
+      const listItems = await web.lists
+        .getByTitle(SNAP_SHARE_LIST)
+        .items.select(
+          "ID",
+          "Title",
+          "PostedBy/Id",
+          "PostedBy/Title",
+          "PostedBy/Name",
+          "PostedBy/EMail",
+          "PostedBy/Department",
+          "PostedBy/JobTitle",
+          "Likes"
+        ) // Ensure 'PostedBy' field is expanded properly
+        .expand("PostedBy")()
+        .then((items) =>
+          items.map((item) => ({
+            id: item.ID,
+            title: item.Title,
+            postedBy: item.PostedBy?.Title || "Unknown",
+            postedByEmail: item.PostedBy?.EMail,
+            postedByDept: item.PostedBy?.Department,
+            postedByRole: item.PostedBy?.JobTitle,
+            likes: item.Likes,
+          }))
+        );
+
+      // Step 2: Fetch images from SnapAndShare document library based on the list item ID
+      const results = await Promise.all(
+        listItems.map(async (item) => {
+          const folderPath = `${siteUrl.ServerRelativeUrl}/${SNAP_SHARE}/${item.id}`;
+          try {
+            // Get files inside the folder corresponding to the item ID
+            const files = await web
+              .getFolderByServerRelativePath(folderPath)
+              .files.select("ServerRelativeUrl")();
+
+            return {
+              ...item,
+              images: files.map((file) => file.ServerRelativeUrl), // Extract image URLs
+            };
+          } catch (error) {
+            console.warn(`No images found for item ID: ${item.id}`, error);
+            return {
+              ...item,
+              images: [], // Return empty array if folder doesn't exist
+            };
+          }
+        })
+      );
+      return results;
+    } catch (error) {
+      console.error(
+        "Error fetching SnapAndShareList items with images:",
+        error
+      );
+      return [];
     }
   }
 }
