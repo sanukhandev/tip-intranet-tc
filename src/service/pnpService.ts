@@ -1,11 +1,12 @@
 import { spfi, SPFx } from "@pnp/sp";
 import { WebPartContext } from "@microsoft/sp-webpart-base";
-import "@pnp/sp/webs"; // ✅ Required for `sp.web`
-import "@pnp/sp/lists"; // ✅ Required for lists
-import "@pnp/sp/items"; // ✅ Required for items
-import "@pnp/sp/folders"; // ✅ Ensure folders are imported
-import "@pnp/sp/files"; // ✅ Ensure files are imported
-import "@pnp/sp/site-users/web"; // ✅ Ensure site-users are imported
+import "@pnp/sp/webs";
+import "@pnp/sp/lists";
+import "@pnp/sp/items";
+import "@pnp/sp/folders";
+import "@pnp/sp/files";
+import "@pnp/sp/site-users/web";
+import { PHOTO_GALLERY } from "../CONSTANTS";
 
 export default class PnpService {
   private static sp: ReturnType<typeof spfi> | null = null;
@@ -169,5 +170,38 @@ export default class PnpService {
     PnpService.ensureInitialized();
     const user = await PnpService.sp!.web.currentUser.select("Id")();
     return user.Id;
+  }
+
+  public static async getDocumentLibraryWithFoldersAndImages(): Promise<
+    Record<string, string[]>
+  > {
+    PnpService.ensureInitialized();
+
+    try {
+      const libraryRoot = PnpService.sp!.web.getFolderByServerRelativePath(
+        `${PHOTO_GALLERY}`
+      );
+
+      // Fetch all folders inside the library
+      const folders = await libraryRoot.folders.select(
+        "Name",
+        "ServerRelativeUrl"
+      )();
+
+      const folderData: Record<string, string[]> = {};
+
+      for (const folder of folders) {
+        const files = await PnpService.sp!.web.getFolderByServerRelativePath(
+          folder.ServerRelativeUrl
+        ).files.select("ServerRelativeUrl")();
+
+        folderData[folder.Name] = files.map((file) => file.ServerRelativeUrl);
+      }
+
+      return folderData;
+    } catch (error) {
+      console.error(`Error fetching document library folders & images:`, error);
+      return {};
+    }
   }
 }

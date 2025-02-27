@@ -49,6 +49,14 @@
           "manifest": "./src/webparts/tabbedList/TabbedListWebPart.manifest.json"
         }
       ]
+    },
+    "snap-share-and-photo-gallery-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/snapShareAndPhotoGallery/SnapShareAndPhotoGalleryWebPart.js",
+          "manifest": "./src/webparts/snapShareAndPhotoGallery/SnapShareAndPhotoGalleryWebPart.manifest.json"
+        }
+      ]
     }
   },
   "externals": {},
@@ -58,6 +66,7 @@
     "QuickLinksWebPartStrings": "lib/webparts/quickLinks/loc/{locale}.js",
     "BuySellItemsWebPartStrings": "lib/webparts/buySellItems/loc/{locale}.js",
     "CompanyCalenderWebPartStrings": "lib/webparts/companyCalender/loc/{locale}.js",
-    "TabbedListWebPartStrings": "lib/webparts/tabbedList/loc/{locale}.js"
+    "TabbedListWebPartStrings": "lib/webparts/tabbedList/loc/{locale}.js",
+    "SnapShareAndPhotoGalleryWebPartStrings": "lib/webparts/snapShareAndPhotoGallery/loc/{locale}.js"
   }
 }

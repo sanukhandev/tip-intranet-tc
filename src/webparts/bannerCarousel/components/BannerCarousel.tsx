@@ -53,7 +53,7 @@ export default class CarouselComponent extends React.Component<
             <span
               className="carousel-control-prev-icon"
               aria-hidden="true"
-            ></span>
+             />
             <span className="visually-hidden">Previous</span>
           </button>
           {this.state.items.map((_, index) => (
@@ -65,7 +65,7 @@ export default class CarouselComponent extends React.Component<
               className={index === 0 ? "active" : ""}
               aria-label={`Slide ${index + 1}`}
               aria-current={index === 0 ? "true" : undefined}
-            ></button>
+             />
           ))}
           <button
             className="carousel-control-next"
@@ -76,7 +76,7 @@ export default class CarouselComponent extends React.Component<
             <span
               className="carousel-control-next-icon"
               aria-hidden="true"
-            ></span>
+             />
             <span className="visually-hidden">Next</span>
           </button>
         </div>
