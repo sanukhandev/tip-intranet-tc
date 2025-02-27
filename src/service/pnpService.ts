@@ -212,8 +212,12 @@ export default class PnpService {
       postedBy: string;
       postedByEmail: string;
       postedByRole: string;
-      likes?: number; // Making 'likes' optional since it wasn't included in your sample data
+      likes?: number;
       images: string[];
+      comments: {
+        id: number;
+        comment: string;
+      }[];
     }[]
   > {
     PnpService.ensureInitialized();
@@ -236,47 +240,69 @@ export default class PnpService {
           "PostedBy/Department",
           "PostedBy/JobTitle",
           "Likes"
-        ) // Ensure 'PostedBy' field is expanded properly
+        )
         .expand("PostedBy")()
         .then((items) =>
           items.map((item) => ({
             id: item.ID,
             title: item.Title,
             postedBy: item.PostedBy?.Title || "Unknown",
-            postedByEmail: item.PostedBy?.EMail,
-            postedByDept: item.PostedBy?.Department,
-            postedByRole: item.PostedBy?.JobTitle,
-            likes: item.Likes,
+            postedByEmail: item.PostedBy?.EMail || "N/A",
+            postedByRole: item.PostedBy?.JobTitle || "N/A",
+            likes: item.Likes || 0,
+            images: [] as string[],
+            comments: [] as { id: number; comment: string;  }[], // Placeholder for comments, fetched later
           }))
         );
 
       // Step 2: Fetch images from SnapAndShare document library based on the list item ID
-      const results = await Promise.all(
+      const snapShareItems = await Promise.all(
         listItems.map(async (item) => {
           const folderPath = `${siteUrl.ServerRelativeUrl}/${SNAP_SHARE}/${item.id}`;
           try {
-            // Get files inside the folder corresponding to the item ID
             const files = await web
               .getFolderByServerRelativePath(folderPath)
               .files.select("ServerRelativeUrl")();
-
             return {
               ...item,
-              images: files.map((file) => file.ServerRelativeUrl), // Extract image URLs
+              images: files.map((file) => file.ServerRelativeUrl),
             };
           } catch (error) {
             console.warn(`No images found for item ID: ${item.id}`, error);
-            return {
-              ...item,
-              images: [], // Return empty array if folder doesn't exist
-            };
+            return { ...item, images: [] };
           }
         })
       );
-      return results;
+
+      // Step 3: Fetch comments related to each Snap & Share item
+      const snapShareWithComments = await Promise.all(
+        snapShareItems.map(async (item) => {
+          try {
+            const comments = await PnpService.getItems("BirthdayComments", [
+              `CommentType eq 'SNP'`,
+              `PostId eq ${item.id}`,
+            ]);
+
+            const formattedComments = comments.map((comment) => ({
+              id: comment.ID,
+              comment: comment.Comment || ""
+            }));
+
+            return { ...item, comments: formattedComments };
+          } catch (error) {
+            console.warn(
+              `Error fetching comments for item ID: ${item.id}`,
+              error
+            );
+            return { ...item, comments: [] }; // Return empty comments if none found
+          }
+        })
+      );
+
+      return snapShareWithComments;
     } catch (error) {
       console.error(
-        "Error fetching SnapAndShareList items with images:",
+        "Error fetching SnapAndShareList items with images and comments:",
         error
       );
       return [];

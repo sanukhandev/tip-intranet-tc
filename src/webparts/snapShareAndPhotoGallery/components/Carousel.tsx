@@ -10,6 +10,10 @@ interface CarouselProps {
     postedByRole: string;
     likes?: number;
     images: string[];
+    comments: {
+      id: number;
+      comment: string;
+    }[];
   }[];
 }
 
@@ -68,7 +72,7 @@ export default class Carousel extends React.Component<CarouselProps> {
                                   ❤️ {item.likes}
                                 </button>
                                 <button className="btn btn-secondary d-inline-flex align-items-center rounded-5 text-white text-12 px-3 py-1 fw-bold ms-2">
-                                  💬 {0}
+                                  💬 {item.comments.length}
                                 </button>
                               </div>
                             </div>
