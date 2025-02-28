@@ -35,21 +35,20 @@ export default class SnapShareAndPhotoGalleryWebPart extends BaseClientSideWebPa
     ReactDom.render(element, this.domElement);
   }
 
-  protected onInit(): Promise<void> {
+protected async onInit(): Promise<void> {
     SPComponentLoader.loadCss(
       `https://techcarrotae.sharepoint.com/sites/TIPDev1/Assets/css/main.min.css`
     );
-    SPComponentLoader.loadCss(
-      `https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css`
+    await SPComponentLoader.loadScript(
+      `https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js`
     );
-    SPComponentLoader.loadScript(
+   await SPComponentLoader.loadScript(
       `https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js`
     );
     return this._getEnvironmentMessage().then((message) => {
       this._environmentMessage = message;
     });
   }
-
   private _getEnvironmentMessage(): Promise<string> {
     if (!!this.context.sdks.microsoftTeams) {
       // running in Teams, office.com or Outlook

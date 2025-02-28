@@ -35,11 +35,14 @@ export default class WelcomeMessageWebPart extends BaseClientSideWebPart<IWelcom
     ReactDom.render(element, this.domElement);
   }
 
-  protected onInit(): Promise<void> {
+  protected async onInit(): Promise<void> {
     SPComponentLoader.loadCss(
       `https://techcarrotae.sharepoint.com/sites/TIPDev1/Assets/css/main.min.css`
     );
-    SPComponentLoader.loadScript(
+    await SPComponentLoader.loadScript(
+      `https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js`
+    );
+    await SPComponentLoader.loadScript(
       `https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js`
     );
     return this._getEnvironmentMessage().then((message) => {

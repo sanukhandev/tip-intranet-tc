@@ -57,6 +57,14 @@
           "manifest": "./src/webparts/snapShareAndPhotoGallery/SnapShareAndPhotoGalleryWebPart.manifest.json"
         }
       ]
+    },
+    "discussion-board-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/discussionBoard/DiscussionBoardWebPart.js",
+          "manifest": "./src/webparts/discussionBoard/DiscussionBoardWebPart.manifest.json"
+        }
+      ]
     }
   },
   "externals": {},
@@ -67,6 +75,7 @@
     "BuySellItemsWebPartStrings": "lib/webparts/buySellItems/loc/{locale}.js",
     "CompanyCalenderWebPartStrings": "lib/webparts/companyCalender/loc/{locale}.js",
     "TabbedListWebPartStrings": "lib/webparts/tabbedList/loc/{locale}.js",
-    "SnapShareAndPhotoGalleryWebPartStrings": "lib/webparts/snapShareAndPhotoGallery/loc/{locale}.js"
+    "SnapShareAndPhotoGalleryWebPartStrings": "lib/webparts/snapShareAndPhotoGallery/loc/{locale}.js",
+    "DiscussionBoardWebPartStrings": "lib/webparts/discussionBoard/loc/{locale}.js"
   }
 }
