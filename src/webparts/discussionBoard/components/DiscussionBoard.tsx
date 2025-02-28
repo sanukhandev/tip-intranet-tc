@@ -1,10 +1,44 @@
 import * as React from "react";
 import type { IDiscussionBoardProps } from "./IDiscussionBoardProps";
+import PnpService from "../../../service/pnpService";
+import { getUserProfilePicture } from "../../../helper";
+
+interface IDiscussionBoardState {
+  currentUser: {
+    id: number;
+    name: string;
+    email: string;
+    loginName: string;
+    jobTitle: string;
+  };
+}
 
 export default class DiscussionBoard extends React.Component<
   IDiscussionBoardProps,
-  {}
+  IDiscussionBoardState
 > {
+  constructor(props: IDiscussionBoardProps) {
+    super(props);
+    PnpService.init(this.props.context);
+    this.state = {
+      currentUser: {
+        id: 0,
+        name: "",
+        email: "",
+        loginName: "",
+        jobTitle: "",
+      },
+    };
+  }
+
+  async componentDidMount(): Promise<void> {
+    await this.fetchCurrentUser();
+  }
+  async fetchCurrentUser(): Promise<void> {
+    PnpService.init(this.props.context);
+    const currentUser = await PnpService.getCurrentUser();
+    this.setState({ currentUser });
+  }
   private renderDiscussionBoard(): JSX.Element {
     return (
       <div className="list-group">
@@ -14,16 +48,16 @@ export default class DiscussionBoard extends React.Component<
               <div className="left me-3">
                 <img
                   className="rounded-circle cmn-pro-pic"
-                  src="assets/images/pro-pic.png"
+                  src={getUserProfilePicture(this.state.currentUser.email)}
                   alt="Profile"
                 />
               </div>
               <div className="right">
                 <label htmlFor="newPost" className="form-label mb-0">
-                  <strong>Sushmita Paul</strong>
+                  <strong>{this.state.currentUser.name}</strong>
                 </label>
                 <p className="mb-0">
-                  <small>- HR Manager</small>
+                  <small>- {this.state.currentUser.jobTitle} </small>
                 </p>
               </div>
             </div>

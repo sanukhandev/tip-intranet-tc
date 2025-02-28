@@ -251,7 +251,7 @@ export default class PnpService {
             postedByRole: item.PostedBy?.JobTitle || "N/A",
             likes: item.Likes || 0,
             images: [] as string[],
-            comments: [] as { id: number; comment: string;  }[], // Placeholder for comments, fetched later
+            comments: [] as { id: number; comment: string }[], // Placeholder for comments, fetched later
           }))
         );
 
@@ -285,7 +285,7 @@ export default class PnpService {
 
             const formattedComments = comments.map((comment) => ({
               id: comment.ID,
-              comment: comment.Comment || ""
+              comment: comment.Comment || "",
             }));
 
             return { ...item, comments: formattedComments };
@@ -306,6 +306,37 @@ export default class PnpService {
         error
       );
       return [];
+    }
+  }
+  public static async getCurrentUser(): Promise<
+    | {
+        id: number;
+        name: string;
+        email: string;
+        loginName: string;
+        jobTitle: string;
+      }
+    | undefined
+  > {
+    PnpService.ensureInitialized();
+    try {
+      const user = await PnpService.sp!.web.currentUser.select(
+        "Id",
+        "Title",
+        "Email",
+        "LoginName",
+        "JobTitle"
+      )();
+      return {
+        id: user.Id,
+        name: user.Title,
+        email: user.Email,
+        loginName: user.LoginName,
+        jobTitle: '',
+      };
+    } catch (error) {
+      console.error("Error fetching current user details:", error);
+      return null;
     }
   }
 }
