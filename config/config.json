@@ -65,6 +65,14 @@
           "manifest": "./src/webparts/discussionBoard/DiscussionBoardWebPart.manifest.json"
         }
       ]
+    },
+    "my-task-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/myTask/MyTaskWebPart.js",
+          "manifest": "./src/webparts/myTask/MyTaskWebPart.manifest.json"
+        }
+      ]
     }
   },
   "externals": {},
@@ -76,6 +84,7 @@
     "CompanyCalenderWebPartStrings": "lib/webparts/companyCalender/loc/{locale}.js",
     "TabbedListWebPartStrings": "lib/webparts/tabbedList/loc/{locale}.js",
     "SnapShareAndPhotoGalleryWebPartStrings": "lib/webparts/snapShareAndPhotoGallery/loc/{locale}.js",
-    "DiscussionBoardWebPartStrings": "lib/webparts/discussionBoard/loc/{locale}.js"
+    "DiscussionBoardWebPartStrings": "lib/webparts/discussionBoard/loc/{locale}.js",
+    "MyTaskWebPartStrings": "lib/webparts/myTask/loc/{locale}.js"
   }
 }
