@@ -1,7 +1,8 @@
 import * as React from "react";
 
 interface GalleryProps {
-  items: Record<string, string[]>; // Folder names as keys, array of image URLs as values
+  items: Record<string, string[]>;
+  pageLink: string;// Folder names as keys, array of image URLs as values
 }
 
 interface GalleryState {
@@ -113,6 +114,28 @@ export default class Gallery extends React.Component<
                 </div>
               ))}
           </div>
+          <a
+            className="main-btn background-none d-inline-flex align-items-center px-4 py-2 mb-1 rounded-5"
+            href={this.props.pageLink}
+          >
+            <span>View All</span>
+            <svg
+              className="ml-2"
+              width="16"
+              height="16"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M9 5l7 7-7 7"
+              />
+            </svg>
+          </a>
         </div>
 
         {/* Image Modal with Carousel */}

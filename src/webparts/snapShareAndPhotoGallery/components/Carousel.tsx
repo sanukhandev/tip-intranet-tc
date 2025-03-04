@@ -15,6 +15,7 @@ interface CarouselProps {
       comment: string;
     }[];
   }[];
+  pageLink: string;
 }
 
 export default class Carousel extends React.Component<CarouselProps> {
@@ -127,6 +128,28 @@ export default class Carousel extends React.Component<CarouselProps> {
             </div>
           </div>
         </div>
+        <a
+          className="main-btn background-none d-inline-flex align-items-center px-4 py-2 mb-1 rounded-5"
+          href={this.props.pageLink}
+        >
+          <span>View All</span>
+          <svg
+            className="ml-2"
+            width="16"
+            height="16"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              d="M9 5l7 7-7 7"
+            />
+          </svg>
+        </a>
       </div>
     );
   }
