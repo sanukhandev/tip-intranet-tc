@@ -73,6 +73,14 @@
           "manifest": "./src/webparts/myTask/MyTaskWebPart.manifest.json"
         }
       ]
+    },
+    "gallery-detail-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/galleryDetail/GalleryDetailWebPart.js",
+          "manifest": "./src/webparts/galleryDetail/GalleryDetailWebPart.manifest.json"
+        }
+      ]
     }
   },
   "externals": {},
@@ -85,6 +93,7 @@
     "TabbedListWebPartStrings": "lib/webparts/tabbedList/loc/{locale}.js",
     "SnapShareAndPhotoGalleryWebPartStrings": "lib/webparts/snapShareAndPhotoGallery/loc/{locale}.js",
     "DiscussionBoardWebPartStrings": "lib/webparts/discussionBoard/loc/{locale}.js",
-    "MyTaskWebPartStrings": "lib/webparts/myTask/loc/{locale}.js"
+    "MyTaskWebPartStrings": "lib/webparts/myTask/loc/{locale}.js",
+    "GalleryDetailWebPartStrings": "lib/webparts/galleryDetail/loc/{locale}.js"
   }
 }
