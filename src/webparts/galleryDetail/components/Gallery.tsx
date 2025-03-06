@@ -1,5 +1,5 @@
 import * as React from "react";
-
+import { Modal as BootstrapModal } from "bootstrap";
 interface GalleryProps {
   items: Record<string, string[]>; // Folder names as keys, array of image URLs as values
 }
@@ -23,22 +23,36 @@ export default class Gallery extends React.Component<
     };
   }
 
-  openModal = (folder: string, images: string[], index: number) => {
-    this.setState({
-      selectedFolder: folder,
-      selectedImages: images,
-      currentIndex: index,
-    });
+  openModal = (folder: string, images: string[], index: number): void => {
+    this.setState(
+      {
+        selectedFolder: folder,
+        selectedImages: images,
+        currentIndex: index,
+      },
+      () => {
+        const modalElement = document.getElementById("galleryModal");
+        if (modalElement) {
+          const modal = new BootstrapModal(modalElement);
+          modal.show();
+        }
+      }
+    );
   };
 
-  closeModal = () => {
+  closeModal = (): void => {
+    const modalElement = document.getElementById("galleryModal");
+    if (modalElement) {
+      const modal = BootstrapModal.getInstance(modalElement);
+      modal?.hide();
+    }
+
     this.setState({
       selectedFolder: null,
       selectedImages: [],
       currentIndex: 0,
     });
   };
-
   prevImage = () => {
     this.setState((prevState) => ({
       currentIndex:
@@ -72,7 +86,7 @@ export default class Gallery extends React.Component<
               .filter(([folder]) => folder !== "Forms")
               .map(([folder, images], folderIndex) => (
                 <div
-                  className="col-md-6 col-sm-6 p-3"
+                  className="col-md-4 col-sm-6 p-2"
                   key={`${folderIndex}-${folder}`}
                 >
                   <div className="gallery-sec rounded-3 overflow-hidden">
