@@ -66,7 +66,7 @@ export default class Birthdays extends React.Component<
       EmployeeIDId: activeEmpId,
       Comment: newComment,
       PostedById: await PnpService.getCurrentUserId(), // Get current logged-in user ID
-      Likes: 0,
+      Likes: "",
       CommentType: this.props.tab, // Default likes count
     });
 
