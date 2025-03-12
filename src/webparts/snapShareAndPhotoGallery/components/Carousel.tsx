@@ -133,28 +133,56 @@ export default class Carousel extends React.Component<CarouselProps> {
             </div>
           </div>
         </div>
-        <a
-          className="main-btn background-none d-inline-flex align-items-center px-4 py-2 mb-1 rounded-5"
-          href={this.props.pageLink}
-        >
-          <span>View All</span>
-          <svg
-            className="ml-2"
-            width="16"
-            height="16"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-            xmlns="http://www.w3.org/2000/svg"
+        <hr className="my-3 border-top border-gray" />
+        <div className="d-flex justify-content-between align-items-center px-3">
+          {/* View All Button (Left) */}
+          <a
+            className="btn btn-outline-primary d-flex align-items-center px-4 py-2 rounded-pill"
+            href={this.props.pageLink}
           >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              d="M9 5l7 7-7 7"
-            />
-          </svg>
-        </a>
+            <span>View All</span>
+            <svg
+              className="ms-2"
+              width="16"
+              height="16"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M9 5l7 7-7 7"
+              />
+            </svg>
+          </a>
+
+          {/* Add New Button (Right) */}
+          <a
+            href={`${this.props.pageLink}/SitePages/MarketPlace.aspx`}
+            className="btn btn-primary d-flex align-items-center px-4 py-2 rounded-pill"
+          >
+            <svg
+              className="me-2"
+              width="12"
+              height="12"
+              viewBox="0 0 12 12"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M11.1429 6.85735H0.857143C0.342857 6.85735 0 6.51449 0 6.00021C0 5.48592 0.342857 5.14307 0.857143 5.14307H11.1429C11.6571 5.14307 12 5.48592 12 6.00021C12 6.51449 11.6571 6.85735 11.1429 6.85735Z"
+                fill="#fff"
+              />
+              <path
+                d="M6.00021 12C5.48592 12 5.14307 11.6571 5.14307 11.1429V0.857143C5.14307 0.342857 5.48592 0 6.00021 0C6.51449 0 6.85735 0.342857 6.85735 0.857143V11.1429C6.85735 11.6571 6.51449 12 6.00021 12Z"
+                fill="#fff"
+              />
+            </svg>
+            Add New
+          </a>
+        </div>
       </div>
     );
   }
