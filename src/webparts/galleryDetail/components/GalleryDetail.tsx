@@ -1,7 +1,7 @@
-import * as React from 'react';
-import type { IGalleryDetailProps } from './IGalleryDetailProps';
-import Gallery from './Gallery';
-import PnpService from '../../../service/pnpService';
+import * as React from "react";
+import type { IGalleryDetailProps } from "./IGalleryDetailProps";
+import Gallery from "./Gallery";
+import PnpService from "../../../service/pnpService";
 interface IGalleryDetailState {
   galleryItems: Record<string, string[]>;
 }
