@@ -72,7 +72,7 @@ export default class Carousel extends React.Component<CarouselProps> {
                               </div>
                               <div className="text-end">
                                 <button className="btn btn-secondary d-inline-flex align-items-center rounded-5 text-white text-12 px-3 py-1 fw-bold">
-                                  ❤️ {item.likes.split(",").length}
+                                  ❤️ {item.likes.split(";").length}
                                 </button>
                                 <button className="btn btn-secondary d-inline-flex align-items-center rounded-5 text-white text-12 px-3 py-1 fw-bold ms-2">
                                   💬 {item.comments.length}
