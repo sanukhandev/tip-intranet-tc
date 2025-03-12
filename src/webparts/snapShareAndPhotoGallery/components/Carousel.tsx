@@ -19,6 +19,9 @@ interface CarouselProps {
 }
 
 export default class Carousel extends React.Component<CarouselProps> {
+  private onClickImageHandle(): void {
+    window.location.href = this.props.pageLink;
+  }
   public render(): React.ReactElement {
     return (
       <div
@@ -44,13 +47,13 @@ export default class Carousel extends React.Component<CarouselProps> {
                     key={index}
                   >
                     <div className="card border-0">
-                      <a href={this.props.pageLink}>
-                        <img
-                          className="mx-290 object-fit-cover rounded-3"
-                          src={item.images[0]}
-                          alt={item.title}
-                        />
-                      </a>
+                      <img
+                        onClick={() => this.onClickImageHandle()}
+                        className="mx-290 object-fit-cover rounded-3"
+                        src={item.images[0]}
+                        alt={item.title}
+                      />
+
                       <div className="card-body">
                         <div className="mb-3">
                           <div className="d-flex my-1">
