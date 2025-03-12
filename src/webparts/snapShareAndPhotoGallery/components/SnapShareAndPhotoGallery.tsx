@@ -12,7 +12,7 @@ interface ISnapShareAndPhotoGalleryState {
     postedBy: string;
     postedByEmail: string;
     postedByRole: string;
-    likes?: number; // Making 'likes' optional since it wasn't included in your sample data
+    likes?: string; // Making 'likes' optional since it wasn't included in your sample data
     images: string[];
     comments: {
       id: number;

@@ -212,7 +212,7 @@ export default class PnpService {
       postedBy: string;
       postedByEmail: string;
       postedByRole: string;
-      likes?: number;
+      likes?: string;
       images: string[];
       comments: {
         id: number;
@@ -332,7 +332,7 @@ export default class PnpService {
         name: user.Title,
         email: user.Email,
         loginName: user.LoginName,
-        jobTitle: '',
+        jobTitle: "",
       };
     } catch (error) {
       console.error("Error fetching current user details:", error);

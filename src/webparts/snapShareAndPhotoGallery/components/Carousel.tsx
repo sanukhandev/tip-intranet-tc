@@ -45,7 +45,6 @@ export default class Carousel extends React.Component<CarouselProps> {
                   >
                     <div className="card border-0">
                       <a href={this.props.pageLink}>
-                        {" "}
                         <img
                           className="mx-290 object-fit-cover rounded-3"
                           src={item.images[0]}

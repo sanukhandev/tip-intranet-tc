@@ -280,7 +280,7 @@ export default class Birthdays extends React.Component<
                         <input
                           type="text"
                           className="form-control w-100 rounded-3 p-3"
-                          placeholder="Write a Birthday Wish..."
+                          placeholder="Write a Wish..."
                           value={this.state.newComment}
                           onChange={(e) =>
                             this.setState({ newComment: e.target.value })
