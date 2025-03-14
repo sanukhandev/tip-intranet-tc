@@ -99,9 +99,6 @@ export default class PnpService {
     filters: string[] = []
   ): Promise<any[]> {
     PnpService.ensureInitialized();
-    // return await PnpService.sp!.web.lists.getByTitle(listName).items.expand(
-    //   "AttachmentFiles"
-    // )();
     let query =
       PnpService.sp!.web.lists.getByTitle(listName).items.expand(
         "AttachmentFiles"
@@ -119,25 +116,14 @@ export default class PnpService {
     PnpService.ensureInitialized();
 
     try {
-      // Fetch the item first to get its folder URL
       const item = await PnpService.sp!.web.lists.getByTitle(libraryName)
-        .items.getById(itemId)
+        .items.filter(`PostID eq ${itemId}`)
         .select("FileRef")(); // ✅ Ensure to select FileRef for folder path
 
-      if (!item.FileRef) {
+      if (!item[0]?.FileRef) {
         return [];
       }
-
-      // Get all files in the item's folder
-      const folderPath = item.FileRef.substring(
-        0,
-        item.FileRef.lastIndexOf("/")
-      );
-      const files = await PnpService.sp!.web.getFolderByServerRelativePath(
-        folderPath
-      ).files();
-
-      return files.map((file) => file.ServerRelativeUrl);
+      return item.map((file) => file.FileRef);
     } catch (error) {
       console.error(
         `Error fetching images for item ${itemId} in ${libraryName}:`,
@@ -249,7 +235,7 @@ export default class PnpService {
             postedBy: item.PostedBy?.Title || "Unknown",
             postedByEmail: item.PostedBy?.EMail || "N/A",
             postedByRole: item.PostedBy?.JobTitle || "N/A",
-            likes: item.Likes || 0,
+            likes: item.Likes || "",
             images: [] as string[],
             comments: [] as { id: number; comment: string }[], // Placeholder for comments, fetched later
           }))

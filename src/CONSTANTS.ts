@@ -19,3 +19,5 @@ export const HOLIDAYS_LIST_NAME = "Holidays";
 export const PHOTO_GALLERY = "PhotoGallery";
 export const SNAP_SHARE_LIST = "SnapAndShareList";
 export const SNAP_SHARE = "SnapAndShare";
+
+export const DMS = "/EventPictureGallery/Gallery";
